@@ -10,6 +10,7 @@ const auth = require("./middleware/auth");
 const limiter = require("./middleware/limiter");
 const { login, createUser } = require("./controllers/users");
 const { serverError } = require("./middleware/serverError");
+const NotFoundError = require("./errors/NotFoundError");
 
 require("dotenv").config();
 

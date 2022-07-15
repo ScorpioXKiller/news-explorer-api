@@ -1,0 +1,49 @@
+{
+  "name": "news-explorer-api",
+  "version": "1.0.0",
+  "description": "News Explorer Back End",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ScorpioXKiller/news-explorer-api.git"
+  },
+  "keywords": [
+    "Backend",
+    "NodeJS",
+    "Express",
+    "MongoDB",
+    "REST API"
+  ],
+  "author": "Dima Gorodov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ScorpioXKiller/news-explorer-api/issues"
+  },
+  "homepage": "https://github.com/ScorpioXKiller/news-explorer-api#readme",
+  "devDependencies": {
+    "eslint": "^8.19.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "nodemon": "^2.0.19"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "celebrate": "^15.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-rate-limit": "^6.4.0",
+    "express-winston": "^4.2.0",
+    "helmet": "^5.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.4.3",
+    "validator": "^13.7.0",
+    "winston": "^3.8.1"
+  }
+}

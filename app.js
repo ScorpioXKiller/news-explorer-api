@@ -71,7 +71,7 @@ async function start() {
     app.use(errors());
     app.use(serverError);
 
-    if (process.env.NODE_ENV !== "production") {
+    if (process.env.NODE_ENV !== "producton") {
       app.listen(PORT, () => {
         console.log(`App listening at port ${PORT}`);
       });

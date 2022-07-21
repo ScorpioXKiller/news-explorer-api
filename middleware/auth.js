@@ -1,28 +1,22 @@
-const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 
 const AuthenticationError = require("../errors/AuthenticationError");
-
-dotenv.config();
-const { NODE_ENV = "defaultValue", JWT_SECRET = "defaultValue" } = process.env;
+const { salt, authorizationRequired } = require("../utils/constants");
 
 module.exports = (req, _res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    throw new AuthenticationError("Authorization required");
+    throw new AuthenticationError(authorizationRequired);
   }
 
   const token = authorization.replace("Bearer ", "");
   let payload;
 
   try {
-    payload = jwt.verify(
-      token,
-      NODE_ENV === "production" ? JWT_SECRET : "secret"
-    );
+    payload = jwt.verify(token, salt);
   } catch (error) {
-    throw new AuthenticationError("Authorization required");
+    throw new AuthenticationError(authorizationRequired);
   }
 
   req.user = payload;

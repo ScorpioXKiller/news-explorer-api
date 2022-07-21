@@ -1,17 +1,18 @@
 const articlesRouter = require("express").Router();
 const { celebrate, Joi } = require("celebrate");
 const {
-  getAllArticles,
+  getSavedArticles,
   createArticle,
   deleteArticle,
 } = require("../controllers/articles");
+const auth = require("../middleware/auth");
 
 const { validateUrl } = require("../middleware/urlValidator");
 
-articlesRouter.get("/", getAllArticles);
+articlesRouter.get("/articles", auth, getSavedArticles);
 
 articlesRouter.post(
-  "/",
+  "/articles",
   celebrate({
     headers: Joi.object()
       .keys({ authorization: Joi.string().required() })
@@ -33,11 +34,12 @@ articlesRouter.post(
       })
       .unknown(true),
   }),
+  auth,
   createArticle
 );
 
 articlesRouter.delete(
-  "/:articleId",
+  "/articles/:articleId",
   celebrate({
     headers: Joi.object()
       .keys({
@@ -61,6 +63,7 @@ articlesRouter.delete(
       })
       .unknown(true),
   }),
+  auth,
   deleteArticle
 );
 

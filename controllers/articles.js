@@ -3,14 +3,22 @@ const ForbiddenError = require("../errors/ForbiddenError");
 const NotFoundError = require("../errors/NotFoundError");
 
 const Article = require("../models/Article");
+const {
+  emptyArticleList,
+  badRequestMessage,
+  articleNotFound,
+  forbiddenAccess,
+  articleDeleted,
+  OK,
+} = require("../utils/constants");
 
-const sendData = (data, res) => res.status(200).send({ data });
+const sendData = (data, res) => res.status(OK).send({ data });
 
-const getAllArticles = (_req, res, next) => {
-  Article.find({})
+const getSavedArticles = (req, res, next) => {
+  Article.find({ owner: req.user._id })
     .then((articles) => {
-      if (!articles) {
-        throw new NotFoundError("No articles to display");
+      if (articles.length === 0) {
+        throw new NotFoundError(emptyArticleList);
       }
 
       sendData(articles, res);
@@ -23,7 +31,7 @@ const createArticle = (req, res, next) => {
     keyword,
     title,
     text,
-    data,
+    date,
     source,
     link,
     image,
@@ -34,7 +42,7 @@ const createArticle = (req, res, next) => {
     keyword,
     title,
     text,
-    data,
+    date,
     source,
     link,
     image,
@@ -42,7 +50,7 @@ const createArticle = (req, res, next) => {
   })
     .then((article) => {
       if (!article) {
-        throw new BadRequestError("Bad request");
+        throw new BadRequestError(badRequestMessage);
       }
 
       sendData(article, res);
@@ -53,25 +61,24 @@ const createArticle = (req, res, next) => {
 const deleteArticle = (req, res, next) => {
   const { articleId } = req.params;
 
-  Article.findByIdAndDelete(articleId)
+  Article.findById(articleId)
+    .select("+owner")
     .then((article) => {
       if (!article) {
-        throw new NotFoundError("No article found with that id");
+        throw new NotFoundError(articleNotFound);
       }
 
       if (!article.owner._id.equals(req.user._id)) {
-        throw new ForbiddenError(
-          "Access to the requested resource is forbidden"
-        );
+        throw new ForbiddenError(forbiddenAccess);
       }
 
-      sendData({ message: "card has been deleted successfully" }, res);
+      Article.deleteOne({ _id: articleId }).then(() => {
+        sendData({ message: articleDeleted }, res);
+      });
     })
     .catch((error) => {
-      if (error.name === "Error") {
-        res.status(403).send({ message: `${error.message}` });
-      } else if (error.name === "CastError") {
-        throw new BadRequestError("Bad request");
+      if (error.name === "CastError") {
+        throw new BadRequestError(badRequestMessage);
       }
 
       next(error);
@@ -80,7 +87,7 @@ const deleteArticle = (req, res, next) => {
 };
 
 module.exports = {
-  getAllArticles,
+  getSavedArticles,
   createArticle,
   deleteArticle,
 };

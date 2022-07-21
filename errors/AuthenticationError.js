@@ -1,7 +1,9 @@
+const { UNAUTHORIZED } = require("../utils/constants");
+
 class AuthenticationError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 401;
+    this.statusCode = UNAUTHORIZED;
   }
 }
 

@@ -7,6 +7,14 @@ const NotFoundError = require("../errors/NotFoundError");
 const { NODE_ENV, JWT_SECRET } = process.env;
 
 const User = require("../models/User");
+const {
+  incorrectCredentials,
+  badRequestMessage,
+  userCreated,
+  userNotFound,
+  userExists,
+  CREATED,
+} = require("../utils/constants");
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -17,7 +25,7 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
-        NODE_ENV === "production" ? JWT_SECRET : "secret",
+        NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
         { expiresIn: "7d" }
       );
       res.send({ token });
@@ -33,18 +41,16 @@ const createUser = (req, res, next) => {
     .then((hash) => User.create({ name, email, password: hash }))
     .then((user) => {
       if (!user) {
-        throw new BadRequestError("Bad request");
+        throw new BadRequestError(badRequestMessage);
       }
 
-      res
-        .status(201)
-        .send({ message: "The user has been created successfully" });
+      res.status(CREATED).send({ message: userCreated });
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        throw new BadRequestError("The email and password are required");
+        throw new BadRequestError(incorrectCredentials);
       } else if (err.name === "MongoServerError") {
-        throw new ConflictError("The user is already exists ");
+        throw new ConflictError(userExists);
       } else next(err);
     })
     .catch(next);
@@ -56,7 +62,7 @@ const getUserById = (req, res, next) => {
       if (user) {
         res.send({ data: user });
       } else {
-        throw new NotFoundError("No user found with that id");
+        throw new NotFoundError(userNotFound);
       }
     })
     .catch(next);

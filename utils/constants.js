@@ -20,10 +20,9 @@ module.exports = {
   REQUEST_CONFLICT,
 };
 
-module.exports.MONGODB_DEV_URL =
-  NODE_ENV === "production"
-    ? SERVER_DB
-    : "mongodb://localhost:27017/news-explorer";
+module.exports.MONGODB_DEV_URL = NODE_ENV === "production"
+  ? SERVER_DB
+  : "mongodb://localhost:27017/news-explorer";
 
 module.exports.salt = NODE_ENV === "production" ? JWT_SECRET : "dev-secret";
 
@@ -35,7 +34,6 @@ module.exports.userNotFound = "No user found with that id";
 module.exports.emptyArticleList = "No articles to display";
 module.exports.articleNotFound = "No article found with that id";
 module.exports.articleDeleted = "The article has been deleted successfully";
-module.exports.forbiddenAccess =
-  "Access to the requested resource is forbidden";
+module.exports.forbiddenAccess = "Access to the requested resource is forbidden";
 module.exports.authorizationRequired = "Authorization required";
 module.exports.serverError = "An error has occurred on the server";
